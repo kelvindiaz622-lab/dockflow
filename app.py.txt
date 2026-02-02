@@ -1,0 +1,63 @@
+from flask import Flask, request
+
+app = Flask(__name__)
+
+FORM_HTML = """
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Dockflow - Solicitar cita</title>
+  </head>
+  <body style="font-family: Arial; max-width: 520px; margin: 40px auto;">
+    <h2>Dockflow - Solicitar cita</h2>
+
+    <form method="POST" action="/agendar">
+      <label>Empresa</label><br>
+      <input name="empresa" required style="width: 100%; padding: 10px;"><br><br>
+
+      <label>Nombre del chofer</label><br>
+      <input name="chofer" required style="width: 100%; padding: 10px;"><br><br>
+
+      <label>Teléfono (formato +1...)</label><br>
+      <input name="telefono" required placeholder="+17048662216" style="width: 100%; padding: 10px;"><br><br>
+
+      <label>Fecha</label><br>
+      <input type="date" name="fecha" required style="width: 100%; padding: 10px;"><br><br>
+
+      <label>Hora</label><br>
+      <input type="time" name="hora" required style="width: 100%; padding: 10px;"><br><br>
+
+      <button type="submit" style="padding: 12px 16px;">Solicitar cita</button>
+    </form>
+  </body>
+</html>
+"""
+
+@app.get("/")
+def home():
+    return FORM_HTML
+
+@app.post("/agendar")
+def agendar():
+    empresa = request.form.get("empresa", "").strip()
+    chofer = request.form.get("chofer", "").strip()
+    telefono = request.form.get("telefono", "").strip()
+    fecha = request.form.get("fecha", "").strip()
+    hora = request.form.get("hora", "").strip()
+
+    return f"""
+    <div style="font-family: Arial; max-width: 520px; margin: 40px auto;">
+      <h2>✅ Cita solicitada</h2>
+      <p><b>Empresa:</b> {empresa}</p>
+      <p><b>Chofer:</b> {chofer}</p>
+      <p><b>Teléfono:</b> {telefono}</p>
+      <p><b>Fecha:</b> {fecha}</p>
+      <p><b>Hora:</b> {hora}</p>
+      <p>Dockflow guardará esta solicitud y te confirmará pronto.</p>
+      <a href="/">← Volver</a>
+    </div>
+    """
+
+if __name__ == "__main__":
+    app.run(debug=True, host="0.0.0.0", port=5000)
